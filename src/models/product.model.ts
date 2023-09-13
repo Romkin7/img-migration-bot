@@ -1,10 +1,11 @@
-import { Schema, model } from 'mongoose';
+import { Schema, SchemaDefinition, model } from 'mongoose';
 // 1. Create an interface representing a document in MongoDB.
 import IProduct from '../types/product.model';
 
 // 2. Create a Schema corresponding to the document interface.
 const productSchema = new Schema<IProduct>(
     {
+        migrated: { type: Boolean, default: false },
         name: { type: String, required: false },
         title: { type: String, required: true },
         alt: { type: String },

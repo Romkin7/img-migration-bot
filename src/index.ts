@@ -8,14 +8,15 @@ import configureAWSS3 from './config/aws.config';
 import Order from './models/order.model';
 import User from './models/user.model';
 import DeliveryCost from './models/deliveryCost.model';
-import IProduct from './types/product.model';
 import stream from 'stream';
+import configureCloudinary from './config/cloudinary.config';
 
 async function updateProducts() {
     try {
         config();
         await connectToMongoDB();
         const s3 = configureAWSS3();
+        const cloudinary = configureCloudinary();
         const products = await Product.find({
             fullname: 'Testitarvike ',
             migrated: false,
@@ -25,9 +26,7 @@ async function updateProducts() {
         })
             .sort({ createdAt: -1 })
             .limit(100);
-        console.log('Products amount is: ');
-        console.log(products.length);
-        products.map(async (product: IProduct) => {
+        products.map(async (product) => {
             const fileURL = product.cover.replace('https://', 'http://');
             http.get(fileURL, async (response) => {
                 const writeStream = new stream.PassThrough();
@@ -45,13 +44,36 @@ async function updateProducts() {
                     .promise();
                 product.cover = result.Location;
                 product.alt = alt;
-                console.log(product.alt, product.cover);
+                cloudinary.v2.uploader.destroy(
+                    product.cover_id,
+                    async (err) => {
+                        if (err) {
+                            throw new Error(err);
+                        } else {
+                            console.log(product.alt, product.cover);
+                            product.cover_id = null;
+                            product.migrated = true;
+                            await product.save();
+                        }
+                    },
+                );
             });
         });
+        const extraProducts = await Product.find({
+            fullname: 'Testitarvike ',
+            migrated: false,
+            category: {
+                $in: categories,
+            },
+        })
+            .sort({ createdAt: -1 })
+            .limit(100);
+        if (extraProducts.length) {
+            updateProducts();
+        }
     } catch (error) {
         console.dir(error);
     }
 }
 
-//const updater = setInterval(updateProducts, 1000);
 updateProducts();

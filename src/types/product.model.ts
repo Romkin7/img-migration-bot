@@ -1,4 +1,4 @@
-import { Types, Schema } from 'mongoose';
+import { Types, Schema, SchemaDefinition } from 'mongoose';
 import ISize from './size';
 import IStore from './store';
 
@@ -59,6 +59,7 @@ export type ConditionTypes =
 export type VatUnits = 24 | 10 | 0;
 
 interface IProduct {
+    migrated?: boolean;
     title: string;
     email: string;
     name?: string;
