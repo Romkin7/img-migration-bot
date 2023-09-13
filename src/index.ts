@@ -18,59 +18,55 @@ async function updateProducts() {
         const s3 = configureAWSS3();
         const cloudinary = configureCloudinary();
         const products = await Product.find({
-            fullname: 'Testitarvike ',
             migrated: false,
             category: {
                 $in: categories,
             },
         })
             .sort({ createdAt: -1 })
-            .limit(100);
+            .limit(30);
+        console.log(`${products.length} Products was found`);
         products.map(async (product) => {
-            const fileURL = product.cover.replace('https://', 'http://');
-            http.get(fileURL, async (response) => {
-                const writeStream = new stream.PassThrough();
-                const alt = `${product.fullname}-${product.category}-${product.type}`;
-                const mimetype = getType(product.cover);
-                console.log(`mimetype is ${mimetype} and alt is ${alt}`);
-                const result = await s3
-                    .upload({
-                        Bucket: `${process.env.AWS_S3_BUCKET_NAME}/tuotteet`,
-                        ACL: 'public-read',
-                        Key: alt,
-                        ContentType: mimetype,
-                        Body: response.pipe(writeStream),
-                    })
-                    .promise();
-                product.cover = result.Location;
-                product.alt = alt;
-                cloudinary.v2.uploader.destroy(
-                    product.cover_id,
-                    async (err) => {
-                        if (err) {
-                            throw new Error(err);
-                        } else {
-                            console.log(product.alt, product.cover);
-                            product.cover_id = null;
-                            product.migrated = true;
-                            await product.save();
-                        }
-                    },
-                );
-            });
+            if (!!product.alt && !product.migrated) {
+                product.migrated = true;
+                product.format = product.type;
+                await product.save();
+                console.log(`Product ${product.fullname} was already migrated`);
+            } else {
+                const fileURL = product.cover.replace('https://', 'http://');
+                http.get(fileURL, async (response) => {
+                    const writeStream = new stream.PassThrough();
+                    const alt = `${product.fullname}-${product.category}-${product.type}`;
+                    const mimetype = getType(product.cover);
+                    console.log(`mimetype is ${mimetype} and alt is ${alt}`);
+                    const result = await s3
+                        .upload({
+                            Bucket: `${process.env.AWS_S3_BUCKET_NAME}/tuotteet`,
+                            ACL: 'public-read',
+                            Key: alt,
+                            ContentType: mimetype,
+                            Body: response.pipe(writeStream),
+                        })
+                        .promise();
+                    product.cover = result.Location;
+                    product.alt = alt;
+                    cloudinary.v2.uploader.destroy(
+                        product.cover_id,
+                        async (error) => {
+                            if (error) {
+                                console.dir(error);
+                            } else {
+                                console.log(product.alt, product.cover);
+                                product.cover_id = null;
+                                product.migrated = true;
+                                product.format = product.type;
+                                await product.save();
+                            }
+                        },
+                    );
+                });
+            }
         });
-        const extraProducts = await Product.find({
-            fullname: 'Testitarvike ',
-            migrated: false,
-            category: {
-                $in: categories,
-            },
-        })
-            .sort({ createdAt: -1 })
-            .limit(100);
-        if (extraProducts.length) {
-            updateProducts();
-        }
     } catch (error) {
         console.dir(error);
     }

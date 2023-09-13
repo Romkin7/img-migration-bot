@@ -13,7 +13,7 @@
         "esModuleInterop": true,
         "removeComments": true,
         "resolveJsonModule": true,
-        "types": ["jest", "node", "cypress"],
+        "types": ["node"],
         "paths": {
             "*": ["./node_modules"]
         }
