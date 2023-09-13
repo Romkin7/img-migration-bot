@@ -39,6 +39,7 @@
     "devDependencies": {
         "@types/bcrypt": "5.0.0",
         "@types/mime": "3.0.1",
+        "@types/node": "20.6.0",
         "dotenv": "16.3.1",
         "eslint": "8.48.0",
         "eslint-config-prettier": "9.0.0",
