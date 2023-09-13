@@ -1,0 +1,51 @@
+{
+    "name": "rr-worker",
+    "version": "1.0.0",
+    "description": "Automated worker, that will run on the background and move product images from cloudinary to aws.",
+    "main": "index.js",
+    "scripts": {
+        "start": "ts-node src/index.ts",
+        "test": "npm run test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/Romkin7/img-migration-bot.git"
+    },
+    "keywords": [
+        "NodeJS",
+        "AWS",
+        "S3",
+        "AWS",
+        "Images",
+        "Cloudinary"
+    ],
+    "author": {
+        "name": "DevDesign",
+        "email": "devdesign@devdesign.fi",
+        "url": "https://www.devdesign.fi"
+    },
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/Romkin7/img-migration-bot/issues"
+    },
+    "homepage": "https://github.com/Romkin7/img-migration-bot#readme",
+    "dependencies": {
+        "aws-sdk": "2.1454.0",
+        "bcrypt": "5.1.1",
+        "cloudinary": "1.40.0",
+        "mime": "^3.0.0",
+        "mongoose": "7.5.0"
+    },
+    "devDependencies": {
+        "@types/bcrypt": "5.0.0",
+        "@types/mime": "3.0.1",
+        "dotenv": "16.3.1",
+        "eslint": "8.48.0",
+        "eslint-config-prettier": "9.0.0",
+        "eslint-plugin-prettier": "5.0.0",
+        "nodemon": "3.0.1",
+        "prettier": "3.0.3",
+        "ts-node": "10.9.1",
+        "typescript": "5.2.2"
+    }
+}

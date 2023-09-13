@@ -1,0 +1,8 @@
+views
+public/libs
+node_modules
+public/js
+frontend/build
+frontend/.next
+**/node_modules
+rr-admin-panel

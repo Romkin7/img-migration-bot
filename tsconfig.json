@@ -1,0 +1,21 @@
+{
+    "ts-node": {
+        "files": true
+    },
+    "compilerOptions": {
+        "module": "commonjs",
+        "downlevelIteration": true,
+        "noImplicitAny": true,
+        "target": "es6",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "removeComments": true,
+        "resolveJsonModule": true,
+        "types": ["jest", "node", "cypress"],
+        "paths": {
+            "*": ["./node_modules"]
+        }
+    }
+}
