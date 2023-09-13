@@ -4,7 +4,9 @@
     "description": "Automated worker, that will run on the background and move product images from cloudinary to aws.",
     "main": "index.js",
     "scripts": {
-        "start": "ts-node src/index.ts",
+        "dev": "ts-node src/index.ts",
+        "start": "node dist/index.js",
+        "build": "tsc",
         "test": "npm run test"
     },
     "repository": {

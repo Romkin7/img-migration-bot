@@ -1,0 +1,1 @@
+ssh -i "~/.ssh/rr-worker.pem" ec2-user@ec2-16-171-18-54.eu-north-1.compute.amazonaws.com
