@@ -28,6 +28,21 @@ async function updateProducts() {
                     console.log(
                         `Product ${product.fullname} was already migrated`,
                     );
+                    if (index === products.length - 1) {
+                        const productsArr = await Product.find({
+                            migrated: false,
+                            category: {
+                                $in: categories,
+                            },
+                        })
+                            .sort({ createdAt: -1 })
+                            .limit(1);
+                        if (productsArr.length) {
+                            traverse(productsArr);
+                        } else {
+                            return;
+                        }
+                    }
                 } else {
                     const fileURL = product.cover.replace(
                         'https://',
@@ -57,7 +72,7 @@ async function updateProducts() {
                                     console.log(product.alt, product.cover);
                                     product.cover_id = null;
                                     product.migrated = true;
-                                    product.format = product.type;
+                                    product.format = product.type || 'unknown';
                                     await product.save();
                                     if (index === products.length - 1) {
                                         const productsArr = await Product.find({
